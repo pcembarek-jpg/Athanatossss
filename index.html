@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أثاناتوس - ATHANATOS</title>
+<style>
+:root {
+    --bg-color: #0b1020;
+    --card-bg: #151d35;
+    --text-color: #e0e5f5;
+    --title-color: #c3b7ff;
+    --accent-color: #7665ff;
+    --border-color: #293353;
+}
+
+body.theme-dark { --bg-color: #0b1020; --card-bg: #151d35; --text-color: #e0e5f5; --title-color: #c3b7ff; --border-color: #293353; }
+body.theme-light { --bg-color: #f4f6f9; --card-bg: #ffffff; --text-color: #222222; --title-color: #4a3fd2; --border-color: #dcdfe6; }
+body.theme-green { --bg-color: #122218; --card-bg: #1b3826; --text-color: #d1e7dd; --title-color: #75b798; --border-color: #2d5a3f; }
+body.theme-yellow { --bg-color: #242217; --card-bg: #383422; --text-color: #f8f9fa; --title-color: #ffda6a; --border-color: #574e2d; }
+
+*{box-sizing:border-box}
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    line-height:2;
+    transition: background 0.3s, color 0.3s;
+}
+header{
+    padding:20px;
+    background: var(--card-bg);
+    text-align:center;
+    border-bottom:2px solid var(--accent-color);
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+header h1{color: var(--title-color);font-size:24px;margin:0;}
+header p{color: var(--text-color);opacity:0.8;margin:5px 0 0 0;font-size:13px}
+
+main{padding:20px;max-width:800px;margin:0 auto}
+
+#auth-screen, #home-screen, #reader-screen { display: none; }
+#auth-screen.active, #home-screen.active, #reader-screen.active { display: block; }
+
+.card-box {
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    margin-top: 30px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+.form-input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-size: 16px;
+    text-align: right;
+}
+.btn-main {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 15px;
+    font-weight: bold;
+    width: 100%;
+}
+.link-text {
+    color: var(--title-color);
+    cursor: pointer;
+    margin-top: 15px;
+    display: inline-block;
+    font-size: 14px;
+}
+
+.reader-tools{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background: var(--card-bg);
+    padding:10px 15px;
+    border-radius:10px;
+    margin-bottom:15px;
+    border:1px solid var(--border-color);
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.btn-tool{
+    background: var(--border-color);
+    color: var(--text-color);
+    border:none;
+    padding:6px 12px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:13px;
+}
+.theme-buttons button {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid white;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.chapter-container{
+    background: var(--card-bg);
+    padding:25px;
+    border-radius:16px;
+    border:1px solid var(--border-color);
+    box-shadow:0 4px 15px rgba(0,0,0,0.3);
+    min-height: 350px;
+}
+.chapter-title{
+    color: var(--title-color);
+    font-size:20px;
+    border-bottom:1px solid var(--border-color);
+    padding-bottom:10px;
+    margin-top:0;
+    text-align:center;
+}
+.chapter-text{
+    font-size:18px;
+    text-align:justify;
+    white-space:pre-line;
+}
+
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+.btn-page {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.btn-page:disabled {
+    background: #555;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+footer{
+    text-align:center;
+    padding:20px;
+    opacity: 0.7;
+    font-size:13px;
+}
+</style>
+</head>
+<body class="theme-dark">
+
+<header>
+<h1>أثاناتوس (ATHANATOS)</h1>
+<p>الجزء الأول: رحلة فريكي نحو داركفيل — تأليف: يوسف أمبارك</p>
+</header>
+
+<main>
+    <!-- 1. شاشة تسجيل الدخول -->
+    <div id="auth-screen" class="card-box active">
+        <h2 id="authTitle">إنشاء حساب جديد</h2>
+        <p id="authSubtitle">سجل حسابك لحفظ تقدمك ومكان قراءتك تلقائياً</p>
+        
+        <div id="registerForm">
+            <input type="text" id="regName" class="form-input" placeholder="اسم المستخدم">
+            <input type="password" id="regPass" class="form-input" placeholder="كلمة المرور">
+            <button class="btn-main" onclick="handleRegister()">تسجيل حساب</button>
+            <span class="link-text" onclick="toggleAuthMode()">لديك حساب بالفعل؟ سجل دخولك</span>
+        </div>
+
+        <div id="loginForm" style="display:none;">
+            <input type="text" id="logName" class="form-input" placeholder="اسم المستخدم">
+            <input type="password" id="logPass" class="form-input" placeholder="كلمة المرور">
+            <button class="btn-main" onclick="handleLogin()">تسجيل الدخول</button>
+            <span class="link-text" onclick="toggleAuthMode()">ليس لديك حساب؟ أنشئ حساباً جديداً</span>
+        </div>
+    </div>
+
+    <!-- 2. شاشة الاستقبال -->
+    <div id="home-screen" class="card-box">
+        <h2>مرحباً بك مجدداً، <span id="displayName" style="color:var(--title-color)"></span></h2>
+        <p id="resumeText">أنت جاهز لمواصلة رحلتك في عالم داركفيل المظلم.</p>
+        <button class="btn-main" onclick="startReading()">📖 مواصلة القراءة</button>
+        <br><br>
+        <button class="btn-tool" onclick="logout()" style="background:#555; margin-top:10px;">تسجيل الخروج</button>
+    </div>
+
+    <!-- 3. شاشة القراءة -->
+    <div id="reader-screen">
+        <div class="reader-tools">
+            <div>
+                <button class="btn-tool" onclick="changeFontSize(1)">A+</button>
+                <button class="btn-tool" onclick="changeFontSize(-1)">A-</button>
+            </div>
+            <div class="theme-buttons">
+                <button style="background:#0b1020;" onclick="setTheme('theme-dark')" title="أسود"></button>
+                <button style="background:#ffffff;" onclick="setTheme('theme-light')" title="أبيض"></button>
+                <button style="background:#1b3826;" onclick="setTheme('theme-green')" title="أخضر مريح"></button>
+                <button style="background:#ffda6a;" onclick="setTheme('theme-yellow')" title="أصفر دافئ"></button>
+            </div>
+        </div>
+
+        <div class="chapter-container">
+            <h2 class="chapter-title" id="pageTitle">عنوان الصفحة</h2>
+            <div class="chapter-text" id="pageText">نص الصفحة هنا...</div>
+        </div>
+
+        <div class="pagination">
+            <button class="btn-page" id="prevBtn" onclick="prevPage()">صفحة سابقة</button>
+            <span id="pageInfo" style="font-weight: bold;">1 / 1</span>
+            <button class="btn-page" id="nextBtn" onclick="nextPage()">صفحة موالية</button>
+        </div>
+        
+        <div style="text-align: center; margin-top: 15px;">
+            <button class="btn-tool" onclick="goHome()">🏠 العودة للرئيسية</button>
+        </div>
+    </div>
+</main>
+
+<footer>
+© 2026 ATHANATOS - جميع الحقوق محفوظة للكاتب يوسف أمبارك
+</footer>
+
+<script>
+const pages = [
+    {
+        title: "الصفحة العتبية: البداية والإهداء",
+        content: `﴿ بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ ﴾\n\nأثاناتوس\nالجزء الأول: رحلة فريكي نحو داركفيل\nتأليف: يوسف أمبارك\n\nإهداء\nإلى كل من سار في طريقٍ لا يعرف نهايته.\nإلى كل من بحث عن الحقيقة، فوجد خلفها سؤالًا أكبر.\nوإلى كل روحٍ ترفض أن تنتهي...\n\n«قد يموت الجسد...\nلكن بعض الأرواح لا تعرف معنى النهاية.»`
+    },
+    {
+        title: "مقدمة القصة",
+        content: `لم تكن داركفيل دولةً عادية، فقد كانت أرضًا تحيط بها الأسرار من كل جانب، وتتكون من خمس ولايات تخفي كل واحدة منها شيئًا لا يرغب أهلها في الحديث عنه، بينما تقف العاصمة في الوسط كأنها آخر مكان ما زال يحاول مقاومة ما يحدث حوله.\n\nوفي أطراف البلاد كان هناك ميناء الظلال، حيث اعتاد البحارة الحديث عن أشياء تتحرك بين الضباب، ومستنقع التماسيح المضللة، المكان الذي ضاعت فيه قوافل كاملة ولم يعد منها سوى آثار أقدام تنتهي فجأة عند الماء.\n\nوفي إحدى ليالي جوان، تغير كل شيء عندما ظهر الضلال داخل العاصمة نفسها، فامتلأت الشوارع بالجنود، وأُغلقت الأبواب، وأصبح الناس يتجنبون النظر إلى الأزقة المظلمة.`
+    },
+    {
+        title: "الفصل الأول: عاصمة لا تنام (الجزء 1)",
+        content: `كانت الساعة تقترب من منتصف الليل حين تغيّر صوت العاصمة.\nلم يكن أحد يعرف متى بدأ الأمر بالضبط، لكن سكان داركفيل اعتادوا أن يميزوا أصوات مدينتهم؛ وقع أقدام الجنود فوق الحجارة، ضجيج العربات في الشوارع الرئيسية، أصوات الباعة المتأخرين، وحتى صفير الرياح وهي تعبر بين الأبنية القديمة. أما تلك الليلة، فقد اختفى كل شيء فجأة، كأن يدًا خفية وضعت الصمت فوق المدينة وأغلقت عليه.\n\nفي أعلى برج المراقبة، كان أحد الجنود يحدق في الأفق. لم يرَ شيئًا في البداية، ثم ظهرت نقطة سوداء خلف الضباب. أطلق الجندي جرس الإنذار، فاهتزت المدينة كلها لصوته، واستيقظ الناس على شيء لم يسمعوه منذ سنوات: الضلال.`
+    },
+    {
+        title: "الفصل الأول: عاصمة لا تنام (الجزء 2)",
+        content: `في أحد الأزقة القريبة من السور الشرقي، كان فريكي يمشي وحده.\nلم يكن يعرف سبب وجوده هناك. كل ما يتذكره أنه فتح عينيه قبل قليل، فوجد نفسه مستندًا إلى جدار بارد، والضباب يملأ الشارع من حوله. لم يكن يحمل سلاحًا، ولا حقيبة، ولا حتى يعرف الطريق الذي جاء منه.\n\nرفع رأسه عندما سمع جرس الإنذار، وتوقّف.\nكان الصوت مألوفًا بطريقة لم يستطع تفسيرها، وشعر بنبضات قلبه تتسارع، كأن شيئًا بعيدًا قد ناداه باسمه.\nثم رأى الظل في نهاية الزقاق...`
+    }
+];
+
+let currentPage = 0;
+let currentFontSize = 18;
+let currentUser = localStorage.getItem('athanatos_user');
+
+window.onload = function() {
+    if (currentUser) {
+        loadUserProgress();
+        showHomeScreen();
+    } else {
+        document.getElementById('auth-screen').classList.add('active');
+    }
+};
+
+function toggleAuthMode() {
+    let regForm = document.getElementById('registerForm');
+    let logForm = document.getElementById('loginForm');
+    let title = document.getElementById('authTitle');
+    let subtitle = document.getElementById('authSubtitle');
+
+    if (regForm.style.display === 'none') {
+        regForm.style.display = 'block';
+        logForm.style.display = 'none';
+        title.innerText = "إنشاء حساب جديد";
+        subtitle.innerText = "سجل حسابك لحفظ تقدمك ومكان قراءتك تلقائياً";
+    } else {
+        regForm.style.display = 'none';
+        logForm.style.display = 'block';
+        title.innerText = "تسجيل الدخول";
+        subtitle.innerText = "مرحباً بك مجدداً في عالم داركفيل";
+    }
+}
+
+function handleRegister() {
+    let name = document.getElementById('regName').value.trim();
+    let pass = document.getElementById('regPass').value.trim();
+    if(!name || !pass) {
+        alert("الرجاء إدخال اسم المستخدم وكلمة المرور!");
+        return;
+    }
+    localStorage.setItem('athanatos_user', name);
+    localStorage.setItem('athanatos_pass_' + name, pass);
+    currentUser = name;
+    currentPage = 0;
+    saveUserProgress();
+    showHomeScreen();
+}
+
+function handleLogin() {
+    let name = document.getElementById('logName').value.trim();
+    let pass = document.getElementById('logPass').value.trim();
+    let savedPass = localStorage.getItem('athanatos_pass_' + name);
+
+    if(!name || !pass) {
+        alert("الرجاء إدخال اسم المستخدم وكلمة المرور!");
+        return;
+    }
+    if(savedPass === pass) {
+        localStorage.setItem('athanatos_user', name);
+        currentUser = name;
+        loadUserProgress();
+        showHomeScreen();
+    } else {
+        alert("اسم المستخدم أو كلمة المرور غير صحيحة!");
+    }
+}
+
+function loadUserProgress() {
+    let savedPage = localStorage.getItem('athanatos_page_' + currentUser);
+    if(savedPage !== null) {
+        currentPage = parseInt(savedPage);
+    } else {
+        currentPage = 0;
+    }
+}
+
+function saveUserProgress() {
+    if(currentUser) {
+        localStorage.setItem('athanatos_page_' + currentUser, currentPage);
+    }
+}
+
+function showHomeScreen() {
+    document.getElementById('auth-screen').classList.remove('active');
+    document.getElementById('reader-screen').classList.remove('active');
+    document.getElementById('home-screen').classList.add('active');
+    document.getElementById('displayName').innerText = currentUser;
+    document.getElementById('resumeText').innerText = `أنت في الصفحة رقم (${currentPage + 1}) من إجمالي (${pages.length}) صفحات. انقر للمتابعة!`;
+}
+
+function logout() {
+    localStorage.removeItem('athanatos_user');
+    currentUser = null;
+    document.getElementById('home-screen').classList.remove('active');
+    document.getElementById('auth-screen').classList.add('active');
+}
+
+function startReading() {
+    document.getElementById('home-screen').classList.remove('active');
+    document.getElementById('reader-screen').classList.add('active');
+    renderPage();
+}
+
+function goHome() {
+    document.getElementById('reader-screen').classList.remove('active');
+    showHomeScreen();
+}
+
+function renderPage() {
+    document.getElementById('pageTitle').innerText = pages[currentPage].title;
+    document.getElementById('pageText').innerText = pages[currentPage].content;
+    document.getElementById('pageInfo').innerText = (currentPage + 1) + " / " + pages.length;
+    
+    document.getElementById('prevBtn').disabled = (currentPage === 0);
+    document.getElementById('nextBtn').disabled = (currentPage === pages.length - 1);
+    
+    saveUserProgress();
+    window.scrollTo(0, 0);
+}
+
+function nextPage() {
+    if (currentPage < pages.length - 1) {
+        currentPage++;
+        renderPage();
+    }
+}
+
+function prevPage() {
+    if (currentPage > 0) {
+        currentPage--;
+        renderPage();
+    }
+}
+
+function changeFontSize(delta) {
+    currentFontSize += delta;
+    if(currentFontSize < 14) currentFontSize = 14;
+    if(currentFontSize > 26) currentFontSize = 26;
+    document.getElementById('pageText').style.fontSize = currentFontSize + 'px';
+}
+
+function setTheme(themeName) {
+    document.body.className = themeName;
+}
+</script>
+
+</body>
+</html>
